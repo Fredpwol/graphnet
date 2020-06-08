@@ -35,11 +35,9 @@ class Node:
 
     
 
-# class Edge:
+class Edge:
 
-#     def __init__(self, weight=None, _from, _to, *args, **kwargs):
-#         self.weight = weight
-#         self._from = _from
-#         self._to = _to
-
-#     def 
+    def __init__ (self, _from, _to, weight=None, *args, **kwargs):
+        self.weight = weight
+        self._from = _from
+        self._to = _to
