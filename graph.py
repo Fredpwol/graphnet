@@ -1,4 +1,4 @@
-import numpy as np
+from Pygnet.components import Edge
 
 class Graph:
 
@@ -7,5 +7,29 @@ class Graph:
         self.max_edge = max_edge
         self.graph_type = graph_type
         self.ref = ref
-        self.edges = []
-        self.__adj_matrix = np.array()
+        self.connections = {}
+        self.__nodes = []
+        self.__adj_matrix = []
+    
+    
+    def add_node(self, node):
+        if node not in self.__nodes:
+            self.__nodes.append(node)
+            node_id = eval(f"node.{self.ref}")
+            self.connections[node_id] = {}
+        else:
+            raise ValueError("Node instance alerady in graph network")
+
+
+    def add_edge(self, _from, _to, weight=1):
+        try:
+            self.connections[_from][_to] = Edge(_from, _to, weight)
+
+        except KeyError:
+            print(f"Error node {_from} not in graph network")
+            return None
+    
+
+    @property
+    def graph_matrix(self):
+        pass
