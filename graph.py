@@ -1,27 +1,36 @@
 from collections import defaultdict
-from Pygnet.components import Edge
+from components import Edge, Node
+from exceptions import InvalidNodeTypeError, MaxNodeError
 import numpy as np
 
-class Graph:
+class Graph(object):
 
     def __init__(self, max_node=float("inf"), max_edge=float("inf"), graph_type="scalar", ref="value" ):
-        self.max_node = max_node
+        self.__max_node = max_node
         self.max_edge = max_edge
         self.graph_type = graph_type
         self.ref = ref
         self.connections = {}
         self.__nodes = []
-        self.n_nodes = 0
-    
+
+
+    def __len__(self):
+        return len(self.__nodes)
+
     
     def add_node(self, node):
-        if node not in self.__nodes:
-            self.__nodes.append(node)
-            node_id = eval(f"node.{self.ref}")
-            self.connections[node_id] = defaultdict(int)
-            self.n_nodes += 1
+        if self.__len__() <= self.__max_node:
+            if node not in self.__nodes:
+                self.__nodes.append(node)
+                if type(node) == Node or issubclass(node.__class__, Node):
+                    node_id = eval(f"node.{self.ref}")
+                else:
+                    raise InvalidNodeTypeError(f"Expected object of type Node or subclass of Node but {type(node)} was given.")
+                self.connections[node_id] = defaultdict(int)
+            else:
+                raise ValueError("Node instance alerady in graph network")
         else:
-            raise ValueError("Node instance alerady in graph network")
+            raise MaxNodeError(f"Graph max size exceeded, expected {self.__max_node} node.")
 
 
     def add_edge(self, _from, _to, weight=1):
@@ -36,11 +45,30 @@ class Graph:
     @property
     def graph_matrix(self):
         nodes = self.__nodes
-        self.__adj_matrix = np.zeros((self.n_nodes, self.n_nodes))
-        for i in range(self.n_nodes):
+        self.__adj_matrix = np.zeros((self.__len__(), self.__len__()))
+        for i in range(self.__len__()):
             id_i = eval(f"nodes[{i}].{self.ref}")
-            for j in range(self.n_nodes):
+            for j in range(self.__len__()):
                 id_j = eval(f"nodes[{j}].{self.ref}")
                 edge = self.connections[id_i][id_j] if not self.connections[id_i][id_j] else self.connections[id_i][id_j].weight
                 self.__adj_matrix[i, j] = edge
         return self.__adj_matrix
+
+    
+    def from_dict(self, dictonary, weights=1):
+        for key in dictonary:
+            node = Node(key)
+            self.add_node(node)
+            for edge in dictonary[key]:
+                if edge in dictonary.keys():
+                    self.add_edge(key, edge, weights)
+                else:
+                    raise KeyError(f"Edge {edge} not in dictionary.")
+
+
+if __name__ == "__main__":
+    g = Graph(4)
+    N = [1,2,43,4]
+    for n in N:
+        g.add_node(Node(n))
+    print(len(g))
