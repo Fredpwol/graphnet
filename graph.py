@@ -1,4 +1,6 @@
+from collections import defaultdict
 from Pygnet.components import Edge
+import numpy as np
 
 class Graph:
 
@@ -9,14 +11,15 @@ class Graph:
         self.ref = ref
         self.connections = {}
         self.__nodes = []
-        self.__adj_matrix = []
+        self.n_nodes = 0
     
     
     def add_node(self, node):
         if node not in self.__nodes:
             self.__nodes.append(node)
             node_id = eval(f"node.{self.ref}")
-            self.connections[node_id] = {}
+            self.connections[node_id] = defaultdict(int)
+            self.n_nodes += 1
         else:
             raise ValueError("Node instance alerady in graph network")
 
@@ -32,4 +35,12 @@ class Graph:
 
     @property
     def graph_matrix(self):
-        pass
+        nodes = self.__nodes
+        self.__adj_matrix = np.zeros((self.n_nodes, self.n_nodes))
+        for i in range(self.n_nodes):
+            id_i = eval(f"nodes[{i}].{self.ref}")
+            for j in range(self.n_nodes):
+                id_j = eval(f"nodes[{j}].{self.ref}")
+                edge = self.connections[id_i][id_j] if not self.connections[id_i][id_j] else self.connections[id_i][id_j].weight
+                self.__adj_matrix[i, j] = edge
+        return self.__adj_matrix
