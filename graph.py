@@ -17,7 +17,18 @@ class Graph(object):
     def __len__(self):
         return len(self.__nodes)
 
-    
+
+    def __iter__(self):
+        self.counter = 0
+        return self
+
+
+    def __next__(self):
+        res = self.__nodes[self.counter]
+        self.counter += 1
+        return res
+
+
     def add_node(self, node):
         if self.__len__() <= self.__max_node:
             if node not in self.__nodes:
@@ -68,7 +79,7 @@ class Graph(object):
 
 if __name__ == "__main__":
     g = Graph(4)
-    N = [1,2,43,4]
-    for n in N:
-        g.add_node(Node(n))
+    d_g = {1:[1,3],2:[0],3:[4,1],4:[2,1]}
+    g.from_dict(d_g)
     print(len(g))
+    print(g.graph_matrix)
