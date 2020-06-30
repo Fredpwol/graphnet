@@ -1,6 +1,6 @@
 from collections import defaultdict
-from components import Edge, Node
-from exceptions import InvalidNodeTypeError, MaxNodeError
+from .components import Edge, Node
+from .exceptions import InvalidNodeTypeError, MaxNodeError
 import numpy as np
 
 class Graph(object):
@@ -32,6 +32,14 @@ class Graph(object):
         return res
 
 
+    def __getitem__(self, key):
+        node = list(filter(lambda x: eval(f'x.{self.ref}') == key, self.__nodes))
+        if len(node) >= 1:
+            return node[0]
+        else:
+            raise KeyError(f"{key} not in Graph")
+
+
     def add_node(self, node):
         if self.__len__() <= self.__max_node:
             if node not in self.__nodes:
@@ -48,18 +56,13 @@ class Graph(object):
 
 
     def add_edge(self, _from, _to, weight=1):
-        try:
-            node = list(filter(lambda x: eval(f'x.{self.ref}') == _from, self.__nodes))[0]
-            node_to = list(filter(lambda x: eval(f'x.{self.ref}') == _to, self.__nodes))[0]
-            self.connections[_from][_to] = Edge(_from, _to, weight)
-            node.add_node(node_to)
-            if self.graph_type == 'scalar':
-                self.connections[_to][_from] = Edge(_to, _from, weight)
-                node_to.add_node(node)
-                
-        except KeyError:
-            print(f"Error node {_from} or {_to} not in graph network")
-            return None
+        self.connections[_from][_to] = Edge(_from, _to, weight)
+        node = self[_from]
+        node_to = self[_to]
+        node.add_node(node_to)
+        if self.graph_type == 'scalar':
+            self.connections[_to][_from] = Edge(_to, _from, weight)
+            node_to.add_node(node)
     
 
     @property
