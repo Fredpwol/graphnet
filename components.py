@@ -16,7 +16,7 @@ class Node:
 
     def __init__(self, value, *args, **kwargs):
         self.value = value
-        self.adjecent_nodes = []
+        self.adjacent_nodes = []
 
 
     def add_node(self, node):
@@ -27,7 +27,7 @@ class Node:
             node : Node
                 node to be added to the list.
         """
-        self.adjecent_nodes.append(node)
+        self.adjacent_nodes.append(node)
 
 
     def __repr__(self):
