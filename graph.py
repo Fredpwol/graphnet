@@ -24,16 +24,19 @@ class Graph(object):
 
 
     def __next__(self):
-        res = self.__nodes[self.counter]
-        self.counter += 1
+        if self.counter < self.__len__():
+            res = self.__nodes[self.counter]
+            self.counter += 1
+        else:
+            raise StopIteration
         return res
 
 
     def add_node(self, node):
         if self.__len__() <= self.__max_node:
             if node not in self.__nodes:
-                self.__nodes.append(node)
                 if type(node) == Node or issubclass(node.__class__, Node):
+                    self.__nodes.append(node)
                     node_id = eval(f"node.{self.ref}")
                 else:
                     raise InvalidNodeTypeError(f"Expected object of type Node or subclass of Node but {type(node)} was given.")
