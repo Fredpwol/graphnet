@@ -1,6 +1,21 @@
-from graph import Graph
-from components import Node
 import random
+
+
+def check_cycle(source, visited, rec_stack):
+    visited[source] = True
+    rec_stack[source] = True
+    for adj_node in source.adjacent_nodes:
+        if adj_node == source:
+            return True
+        elif rec_stack[adj_node]:
+            return True
+        elif not visited[adj_node]:
+            if check_cycle(adj_node, visited, rec_stack):
+                return True
+
+    rec_stack[source] = False
+    return False
+
 
 
 class GraphPriorityQueue:
@@ -35,7 +50,7 @@ class GraphPriorityQueue:
             sign = "<=" if self.type == "min" else ">=" if self.type == "max" else ''
             state = '' if not self.__state else 'and (not self.status[node])'
             for node in self.queue:
-                if eval(f"(self.queue[node] {sign} self._top {state})"):
+                if eval("(self.queue[node] %s self._top %s)"%(sign, state)):
                     self._top = self.queue[node]
                     res = node
             del self.queue[res]
@@ -52,21 +67,3 @@ class GraphPriorityQueue:
 
     def enqueue(self, node , value):
         self.queue[node] = value
-
-
-
-if __name__ == "__main__":
-    g = Graph()
-    for i in range(1,11):
-        n = Node(i)
-        g.add_node(n)
-
-    q = GraphPriorityQueue(g, type='min')
-    for node in g:
-        val = random.randint(1,10)
-        q.enqueue(node,val)
-
-    print(q)
-    for _ in range(10):
-        print(q.get())
-    
