@@ -1,15 +1,19 @@
 from collections import defaultdict
 from .components import Edge, Node
-from .exceptions import InvalidNodeTypeError, MaxNodeError
+from .exceptions import InvalidNodeTypeError, MaxNodeError, GraphTypeError
+from .utils import check_cycle
 import numpy as np
+
+
 
 class Graph(object):
 
-    def __init__(self, max_node=float("inf"), max_edge=float("inf"), graph_type="scalar", ref="value" ):
+    def __init__(self, max_node=float("inf"), max_edge=float("inf"), type="scalar", ref="value" ):
         self.__max_node = max_node
         self.max_edge = max_edge
-        self.graph_type = graph_type
+        self.type = type
         self.ref = ref
+        self.edges = []
         self.connections = {}
         self.__nodes = []
 
@@ -34,10 +38,11 @@ class Graph(object):
 
     def __getitem__(self, key):
         node = list(filter(lambda x: eval(f'x.{self.ref}') == key, self.__nodes))
+
         if len(node) >= 1:
             return node[0]
         else:
-            raise KeyError(f"{key} not in Graph")
+            raise KeyError("%s not in Graph"%(key))
 
 
     def add_node(self, node):
@@ -52,18 +57,22 @@ class Graph(object):
             else:
                 raise ValueError("Node instance alerady in graph network")
         else:
-            raise MaxNodeError(f"Graph max size exceeded, expected {self.__max_node} node.")
+            raise MaxNodeError("Graph max size exceeded, expected %d node."%(self.__max_node))
 
 
     def add_edge(self, _from, _to, weight=1):
-        self.connections[_from][_to] = Edge(_from, _to, weight)
-        node = self[_from]
-        node_to = self[_to]
-        node.add_node(node_to)
-        if self.graph_type == 'scalar':
-            self.connections[_to][_from] = Edge(_to, _from, weight)
-            node_to.add_node(node)
-    
+        if len(self.connections) <= self.max_edge:
+            node = self[_from]
+            node_to = self[_to]
+            edge =  Edge(node, node_to, weight)
+            self.connections[_from][_to] = edge
+            node.add_node(node_to)
+            if self.type == 'scalar':
+                self.connections[_to][_from] = edge
+                node_to.add_node(node)
+            self.edges.append(edge)
+        else:
+            raise  MaxNodeError("Graph max size exceeded, expected %d node."%(self.max_edge))   
 
     @property
     def graph_matrix(self):
@@ -86,8 +95,29 @@ class Graph(object):
                 if edge in dictonary.keys():
                     self.add_edge(key, edge, weights)
                 else:
-                    raise KeyError(f"Edge {edge} not in dictionary.")
+                    raise KeyError("Edge %s not in dictionary."%(edge))
 
+
+
+
+    def is_cyclic(self):
+        if self.type != 'vector':
+            raise GraphTypeError("cyclic check only works for vector type graphs")
+        visited = {}
+        rec_stack = {}
+        for node in self:
+            visited[node] = False
+            rec_stack[node] = False
+        for source in self:
+            if check_cycle(source, visited, rec_stack):
+                return True
+
+        return False
+        
+
+    def clear(self):
+        self.__nodes.clear()
+        self.connections = {}
 
 if __name__ == "__main__":
     g = Graph(4)
