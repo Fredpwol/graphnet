@@ -1,3 +1,2 @@
-
-from . import graph
-from . import components
+from .components import *
+from .graph import Graph
