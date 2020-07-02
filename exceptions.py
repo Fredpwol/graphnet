@@ -8,3 +8,10 @@ class InvalidNodeTypeError(Error):
 
 class MaxNodeError(Error):
     pass
+
+
+class GraphTypeError(Error):
+    pass
+
+class MaxEdgeError(Error):
+    pass
