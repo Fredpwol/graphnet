@@ -8,7 +8,6 @@ def topological_sort(graph):
             res = []
             Q = queue.Queue()
             indegree ={}
-            visited_nodes = 0
             for node in graph:
                 indegree[node] = 0
             for edge in graph.edges:
@@ -24,7 +23,6 @@ def topological_sort(graph):
                     if indegree[adj_node] == 0:
                         Q.put(adj_node)
                 res.append(n)
-                visited_nodes += 1
             return res
         else:
             raise GraphTypeError("Graph contains cycle")
