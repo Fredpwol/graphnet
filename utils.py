@@ -65,5 +65,10 @@ class GraphPriorityQueue:
         self.status[node] = value
     
 
-    def enqueue(self, node , value):
+    def enqueue(self, node , value=0):
         self.queue[node] = value
+
+    def is_empty(self):
+        if len(self.queue) > 0:
+            return False
+        return True
