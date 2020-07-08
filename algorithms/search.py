@@ -1,5 +1,4 @@
 from Pygnet.graph import Graph
-
 import queue
 
 
@@ -8,23 +7,23 @@ def BFS(graph, source=None, key=None):
     source = graph[source]
 
     Q = queue.Queue(0)
-    visisted = {}
+    visited = {}
     path = []
     for node in graph:
-        visisted[node] = False
+        visited[node] = False
     if source == None:
-        source = list(visisted.keys())[0]
+        source = list(visited.keys())[0]
     Q.put(source)
 
     while not Q.empty():
         node = Q.get()
         path.append(node)
         for adj_node in node.adjacent_nodes:
-            if not visisted[adj_node]:
+            if not visited[adj_node]:
                 Q.put(adj_node)
                 if adj_node == key:
                     return path
-        visisted[node] = True
+        visited[node] = True
     return path
 
 
@@ -34,7 +33,7 @@ def DFS(graph, source=None, key=None):
     source = graph[source]
 
 
-    def dfs_traverse(source, key=None, visisted=None):
+    def dfs_traverse(source, key=None, visited=None):
         if key:
             if source == key:
                 return [source]
@@ -46,10 +45,10 @@ def DFS(graph, source=None, key=None):
             return None
         else:
             for node in source.adjacent_nodes:
-                if node in visisted:
+                if node in visited:
                     pass
-                dfs_traverse(node, visisted=visisted)
-            visisted.append(source)
+                dfs_traverse(node, visited=visited)
+            visited.append(source)
 
     if key != None: 
         assert source != None
@@ -61,10 +60,9 @@ def DFS(graph, source=None, key=None):
     else:
         for node in graph:
             visisted =[]
-            dfs_traverse(node, visisted=visisted)
+            dfs_traverse(node, visited=visisted)
         return visisted
     return None
-
 
 
 
