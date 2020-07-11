@@ -1,11 +1,11 @@
 
 import unittest
-from Pygnet import Node
-from Pygnet import Graph
-from Pygnet.algorithms.search import BFS
 import numpy as np
-from Pygnet.algorithms.sort import topological_sort
-from Pygnet.algorithms.path import dijkstra
+from pygnet import Node
+from pygnet import Graph
+from pygnet.algorithms.search import BFS
+from pygnet.algorithms.sort import topological_sort
+from pygnet.algorithms.path import dijkstra
 
 
 class Test(unittest.TestCase):
