@@ -1,4 +1,4 @@
-from Pygnet.graph import Graph
+from ..graph import Graph
 import queue
 
 
