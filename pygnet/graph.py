@@ -2,6 +2,7 @@ from collections import defaultdict
 from .components import Edge, Node
 from .exceptions import InvalidNodeTypeError, MaxNodeError, GraphTypeError
 from .utils import check_cycle
+from .algorithms.search import BFS
 import numpy as np
 
 
@@ -118,6 +119,18 @@ class Graph(object):
     def clear(self):
         self.__nodes.clear()
         self.connections = {}
+
+
+    def is_connected(self):
+        if self.type == 'scalar':
+            traverse = BFS(self)
+            for node in self.__nodes:
+                if not node in traverse:
+                    return False
+            return True
+        else:
+            raise GraphTypeError("Invalid graph type %s expected scalar"%(self.type))
+
 
 if __name__ == "__main__":
     g = Graph(4)
