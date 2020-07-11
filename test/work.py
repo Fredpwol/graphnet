@@ -1,6 +1,6 @@
-from Pygnet import Graph, Node
-from Pygnet.algorithms.search import DFS
-from Pygnet.algorithms.path import dijkstra
+from pygnet import Graph, Node
+from pygnet.algorithms.search import DFS
+from pygnet.algorithms.path import dijkstra
 
 
 
