@@ -1,6 +1,7 @@
 from pygnet import Graph, Node
 from pygnet.algorithms.search import DFS
 from pygnet.algorithms.path import dijkstra
+import matplotlib.pyplot as plt 
 
 
 
@@ -13,3 +14,6 @@ for e in edges:
 print(g.graph_matrix)
 cost = dijkstra(g,0,5,path=True)
 print(cost)
+
+g.display(weighted=True)
+plt.show()
