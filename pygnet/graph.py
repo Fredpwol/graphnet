@@ -3,6 +3,7 @@ from .components import Edge, Node
 from .exceptions import InvalidNodeTypeError, MaxNodeError, GraphTypeError
 from .utils import check_cycle
 from .algorithms.search import BFS
+from ._vis.layout import plot_graph_directed
 import numpy as np
 
 
@@ -38,7 +39,7 @@ class Graph(object):
 
 
     def __getitem__(self, key):
-        node = list(filter(lambda x: eval(f'x.{self.ref}') == key, self.__nodes))
+        node = list(filter(lambda x: eval('x.%s'%self.ref) == key, self.__nodes))
 
         if len(node) >= 1:
             return node[0]
@@ -51,9 +52,9 @@ class Graph(object):
             if node not in self.__nodes:
                 if type(node) == Node or issubclass(node.__class__, Node):
                     self.__nodes.append(node)
-                    node_id = eval(f"node.{self.ref}")
+                    node_id = eval("node.%s"%self.ref)
                 else:
-                    raise InvalidNodeTypeError(f"Expected object of type Node or subclass of Node but {type(node)} was given.")
+                    raise InvalidNodeTypeError("Expected object of type Node or subclass of Node but %s was given."%type(node))
                 self.connections[node_id] = defaultdict(int)
             else:
                 raise ValueError("Node instance alerady in graph network")
@@ -80,9 +81,9 @@ class Graph(object):
         nodes = self.__nodes
         self.__adj_matrix = np.zeros((self.__len__(), self.__len__()))
         for i in range(self.__len__()):
-            id_i = eval(f"nodes[{i}].{self.ref}")
+            id_i = eval("nodes[%s].%s"%(i, self.ref))
             for j in range(self.__len__()):
-                id_j = eval(f"nodes[{j}].{self.ref}")
+                id_j = eval("nodes[%s].%s"%(j, self.ref))
                 edge = self.connections[id_i][id_j] if not self.connections[id_i][id_j] else self.connections[id_i][id_j].weight
                 self.__adj_matrix[i, j] = edge
         return self.__adj_matrix
@@ -130,6 +131,11 @@ class Graph(object):
             return True
         else:
             raise GraphTypeError("Invalid graph type %s expected scalar"%(self.type))
+
+    
+    def display(self, weighted=False):
+        if self.type == "vector":
+            plot_graph_directed(self,len(self), self.ref, weighted)
 
 
 if __name__ == "__main__":
