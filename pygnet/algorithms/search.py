@@ -1,9 +1,7 @@
-from ..graph import Graph
 import queue
 
 
 def BFS(graph, source=None, key=None):
-    assert type(graph) == Graph 
     source = graph[source]
 
     Q = queue.Queue(0)
@@ -29,7 +27,6 @@ def BFS(graph, source=None, key=None):
 
 
 def DFS(graph, source=None, key=None):
-    assert type(graph) == Graph 
     source = graph[source]
 
 
