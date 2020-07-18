@@ -1,4 +1,5 @@
 import random
+import copy
 
 
 def check_cycle(source, visited, rec_stack):
@@ -15,6 +16,19 @@ def check_cycle(source, visited, rec_stack):
 
     rec_stack[source] = False
     return False
+
+
+def remove_all_loops(graph, inplace=False):
+    temp = copy.deepcopy(graph)
+    graph = temp if not inplace else graph
+    for node in graph.get_nodes:
+        for neigh in node.adjacent_nodes:
+            graph.remove_edge(graph.get_node_id(neigh), graph.get_node_id(node))
+    if not inplace:
+        return graph
+
+
+
 
 
 
@@ -69,6 +83,11 @@ class GraphPriorityQueue:
         self.queue[node] = value
 
     def is_empty(self):
-        if len(self.queue) > 0:
+        if len(self.queue) !=0:
             return False
         return True
+
+
+
+
+    
