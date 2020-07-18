@@ -1,7 +1,7 @@
 from collections import defaultdict
 from .components import Edge, Node
 from .exceptions import InvalidNodeTypeError, MaxNodeError, GraphTypeError
-from .utils import check_cycle
+from .utils import check_cycle, get_node_id
 from .algorithms.search import BFS
 from ._vis.layout import plot_graph_directed
 import numpy as np
@@ -33,13 +33,13 @@ class Graph(object):
         if self.counter < self.__len__():
             res = self.__nodes[self.counter]
             self.counter += 1
+            return res
         else:
             raise StopIteration
-        return res
 
 
     def __getitem__(self, key):
-        node = list(filter(lambda x: eval('x.%s'%self.ref) == key, self.__nodes))
+        node = list(filter(lambda x: get_node_id(self, x) == key, self.__nodes))
 
         if len(node) >= 1:
             return node[0]
@@ -47,14 +47,24 @@ class Graph(object):
             raise KeyError("%s not in Graph"%(key))
 
 
+    def __enter__(self):
+        return self
+
+
+    def __exit__(self,exc_type, exc_val, exc_tb):
+        self.clear()
+
+
     def add_node(self, node):
         if self.__len__() <= self.__max_node:
+            if type(node) in [str, int, float]:
+                node = Node(node)
             if node not in self.__nodes:
                 if type(node) == Node or issubclass(node.__class__, Node):
                     self.__nodes.append(node)
-                    node_id = eval("node.%s"%self.ref)
+                    node_id = get_node_id(self, node)
                 else:
-                    raise InvalidNodeTypeError("Expected object of type Node or subclass of Node but %s was given."%type(node))
+                    raise InvalidNodeTypeError("Expected object of type str, float, int, Node or subclass of Node but %s was given."%type(node))
                 self.connections[node_id] = defaultdict(int)
             else:
                 raise ValueError("Node instance alerady in graph network")
@@ -64,6 +74,10 @@ class Graph(object):
 
     def add_edge(self, _from, _to, weight=1):
         if len(self.connections) <= self.max_edge:
+            if type(_from) == Node or issubclass(_from.__class__, Node):
+                _from = get_node_id(self, _from)
+            if type(_to) == Node or issubclass(_to.__class__, Node):
+                _to = get_node_id(self, _to)
             node = self[_from]
             node_to = self[_to]
             edge =  Edge(node, node_to, weight)
@@ -74,20 +88,28 @@ class Graph(object):
                 node_to.add_node(node)
             self.edges.append(edge)
         else:
-            raise  MaxNodeError("Graph max size exceeded, expected %d node."%(self.max_edge))   
+            raise  MaxNodeError("Graph max size exceeded, expected %d node."%(self.max_edge)) 
+
+
+    def add_nodes_from_list(self, iterable):
+        for node in iterable:
+            self.add_node(node)
 
     @property
     def graph_matrix(self):
         nodes = self.__nodes
         self.__adj_matrix = np.zeros((self.__len__(), self.__len__()))
         for i in range(self.__len__()):
-            id_i = eval("nodes[%s].%s"%(i, self.ref))
+            id_i = get_node_id(self, nodes[i])
             for j in range(self.__len__()):
-                id_j = eval("nodes[%s].%s"%(j, self.ref))
+                id_j = get_node_id(self, nodes[j])
                 edge = self.connections[id_i][id_j] if not self.connections[id_i][id_j] else self.connections[id_i][id_j].weight
                 self.__adj_matrix[i, j] = edge
         return self.__adj_matrix
 
+    @property
+    def get_nodes(self):
+        return self.__nodes
     
     def from_dict(self, dictonary, weights=1):
         for key in dictonary:
@@ -120,6 +142,7 @@ class Graph(object):
     def clear(self):
         self.__nodes.clear()
         self.connections = {}
+        self.edges.clear()
 
 
     def is_connected(self):
@@ -137,10 +160,10 @@ class Graph(object):
         if self.type == "vector":
             plot_graph_directed(self,len(self), self.ref, weighted)
 
+    
 
-if __name__ == "__main__":
-    g = Graph(4)
-    d_g = {1:[1,3],2:[0],3:[4,1],4:[2,1]}
-    g.from_dict(d_g)
-    print(len(g))
-    print(g.graph_matrix)
+
+
+
+
+
