@@ -6,7 +6,7 @@ from ..graph import Graph
 def dijkstra(graph, _from, _to, path=False):
     if graph.is_cyclic():
         raise GraphTypeError("Graph contains circle.")
-    elif graph.type != 'vector':
+    elif graph.type != 'vector' or  graph.type == 'V':
         raise GraphTypeError("Graph type most be vector not %s"%(graph.type))
 
     source = graph[_from]
@@ -41,7 +41,7 @@ def dijkstra(graph, _from, _to, path=False):
 
 #TODO Implement minimum spanning tree
 def minimum_spanning_tree(graph):
-    if graph.type == "scalar":
+    if graph.type == "scalar" or graph.type == 'S':
         key = {}
         parent = {}
         visited = []
