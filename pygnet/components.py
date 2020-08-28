@@ -9,17 +9,23 @@ class Node:
     value:int, str or object 
         This is the value of a node object. In graph it is used for identifying
         every node in it.
+    color:str,default=None
+        This specifies the color of the node instance to be displayed in a graph
+        display method
 
     Attributes
     ----------
+    value:int, str or object
 
     adjacent_nodes : List(Node)
         This is a list of all adjacent node object connected to the node.
+    color
     """
 
-    def __init__(self, value, *args, **kwargs):
+    def __init__(self, value, color=None):
         self.value = value
         self.adjacent_nodes = []
+        self.color =color
 
 
     def add_node(self, node):
@@ -54,20 +60,25 @@ class Edge:
         which means the edge is unweighted,
         Note: to perfrom graph algorithm operations like pathfinding the weight 
         most be either of type interger or float.
+    color:str
+        This specifies the color of the node instance to be displayed in a graph
+        display method
     
     Attributes
     ----------
-    _from
-    _to
-    weight
+    _from:Node
+    _to:Node
+    weight:str, int, float, default=None
+    
+    color:str, default=None
 
     """
 
-    def __init__ (self, _from, _to, weight=None, *args, **kwargs):
+    def __init__ (self, _from, _to, weight=None, color=None):
         self.weight = weight
         self._from = _from
         self._to = _to
-
+        self.color = color
     
     def __repr__(self):
         return "Edge(src=%s, dest=%s, weight=%s)"%(self._from, self._to, self.weight)
