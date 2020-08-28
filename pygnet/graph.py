@@ -6,10 +6,39 @@ from .algorithms.search import BFS
 from ._vis.layout import plot_graph_directed, plot_graph_undirected
 import matplotlib.pyplot as plt
 import numpy as np
-
+from sklearn.linear_model import LinearRegression
 
 
 class Graph(object):
+    """
+    Implements the Graph data structure which contains nodes or vertices linked with edges between them
+
+    Graph helps in managing relationship between nodes in a network with their edges.
+    Parameters
+    ----------
+    max_node:int, float, optional, default=infinity
+        the maximum amount of nodes that can be added to the graph,
+        default is infinty which means in theory nodes can be added
+        to the graph indefinetly.
+    max_edge:int, float, optional, default=infinity
+        the maximum amount of edges that can be added to the graph,
+        default is inifinty
+    type:{'scalar'or'S', 'vector'or'V'},optional, default='scalar'
+        this specifies the graph type, the are two graph types 'vector'
+        which represents directional graphs and 'scalar' which represents
+        undirectional graphs. the type of of graph determines the behaviour
+        of the graph instance and which algorithm work with it. optionally 
+        you can substutute 'scalar' with 'S' and 'vector' with 'V'.
+    ref:str,optional,default="value"
+        the attribute used by the graph for refrencing the node object passed in
+        for identification and accessing as key value for the graph. change this
+        if you are using a inherited node object to the object identifier else if
+        your'e using the built in Node class directly then leave it as default.
+
+    Attributes
+    ----------
+
+    """
 
     def __init__(self, max_node=float("inf"), max_edge=float("inf"), type="scalar", ref="value" ):
         self.__max_node = max_node
@@ -85,7 +114,7 @@ class Graph(object):
             self.connections[_from][_to] = edge
             node.add_node(node_to)
             self.edges.append(edge)
-            if self.type == 'scalar':
+            if self.type == 'scalar' or  self.type == 'S':
                 edge2 = Edge(_to, _from, weight)
                 self.connections[_to][_from] = edge2
                 node_to.add_node(node)
@@ -130,7 +159,7 @@ class Graph(object):
 
 
     def is_cyclic(self):
-        if self.type != 'vector':
+        if self.type != 'vector' or  self.type == 'V':
             raise GraphTypeError("cyclic check only works for vector type graphs")
         visited = {}
         rec_stack = {}
@@ -151,7 +180,7 @@ class Graph(object):
 
 
     def is_connected(self):
-        if self.type == 'scalar':
+        if self.type == 'scalar' or  self.type == 'S':
             traverse = BFS(self)
             for node in self.__nodes:
                 if not node in traverse:
@@ -163,7 +192,7 @@ class Graph(object):
     
     def display(self, weighted=False):
         _, ax1 = plt.subplots(1 ,figsize=(20, 15))
-        if self.type == "vector":
+        if self.type == "vector" or  self.type == 'V':
             plot_graph_directed(self, ax1, len(self), weighted)
         else:
             plot_graph_undirected(self, ax1, len(self), weighted)
