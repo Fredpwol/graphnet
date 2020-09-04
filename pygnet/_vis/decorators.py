@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def preproccess_plot(func):
 
-    def wrapper(graph, ax, n, weighted):
+    def wrapper(graph, ax, n, weighted, shrinkA, shrinkB, arrowstyle):
         space = np.linspace(0,1,n+1)
         wrapper.scale = 100 // (n+1)
         size = wrapper.scale + 10
@@ -17,10 +17,12 @@ def preproccess_plot(func):
         for i, node in enumerate(graph):
             wrapper.points[node] = (x[i], y[i])
 
-        func(graph, ax, n, weighted)
-        ax.plot(x, y, "o",markersize=size)
+        func(graph, ax, n, weighted, shrinkA, shrinkB, arrowstyle)
+        for i, node in enumerate(graph):
+            ax.plot(x[i], y[i], "o",markersize=size, color=node.color)
 
         for node in wrapper.points:
+            #
             x, y = wrapper.points[node]
             value = graph.get_node_id(node)
             ax.annotate(value, (x, y))
