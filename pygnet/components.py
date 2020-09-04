@@ -25,7 +25,7 @@ class Node:
     def __init__(self, value, color=None):
         self.value = value
         self.adjacent_nodes = []
-        self.color =color
+        self.color = "blue"
 
 
     def add_node(self, node):
@@ -41,7 +41,7 @@ class Node:
 
 
     def __repr__(self):
-        return str(self.value)
+        return "Node(%s)"%str(self.value)
 
     
 
@@ -78,7 +78,7 @@ class Edge:
         self.weight = weight
         self._from = _from
         self._to = _to
-        self.color = color
+        self.color = "blue"
     
     def __repr__(self):
         return "Edge(src=%s, dest=%s, weight=%s)"%(self._from, self._to, self.weight)
