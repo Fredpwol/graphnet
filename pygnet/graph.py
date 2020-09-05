@@ -6,7 +6,6 @@ from .algorithms.search import BFS
 from ._vis.layout import plot_graph_directed, plot_graph_undirected
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.linear_model import LinearRegression
 
 
 class Graph(object):
@@ -37,6 +36,17 @@ class Graph(object):
 
     Attributes
     ----------
+    edges:list
+        This is a list of all edges in the graph instance
+    connections:dict<defaultdict>
+        A dictionary thats maps each node to its neighbour with an edge, a node 
+        in the connection dictionary contains a default dict and in the default dict
+        the adjacent node is mapped with its edge object and if there is no relationship
+        with the two node 0 will be returned.
+    graph_matrix: numpy.array()
+        this is a adjacent matrix form of the graph, it is read only.
+    get_node: list
+        lits of all the node object in the graph, read only.
 
     """
 
@@ -48,6 +58,7 @@ class Graph(object):
         self.edges = []
         self.connections = {}
         self.__nodes = []
+        self.__node_map = {}
 
 
     def __len__(self):
@@ -55,26 +66,22 @@ class Graph(object):
 
 
     def __iter__(self):
-        self.counter = 0
+        self.__counter = 0
         return self
 
 
     def __next__(self):
-        if self.counter < self.__len__():
-            res = self.__nodes[self.counter]
-            self.counter += 1
+        if self.__counter < self.__len__():
+            res = self.__nodes[self.__counter]
+            self.__counter += 1
             return res
         else:
             raise StopIteration
 
 
     def __getitem__(self, key):
-        node = list(filter(lambda x: self.get_node_id(x) == key, self.__nodes))
-
-        if len(node) >= 1:
-            return node[0]
-        else:
-            raise KeyError("%s not in Graph"%(key))
+        print(self.__node_map)
+        return self.__node_map[key]
 
 
     def __enter__(self):
@@ -86,6 +93,14 @@ class Graph(object):
 
 
     def add_node(self, node):
+        """
+        Adds an arbitrary object or Node object to the graph,
+        all nodes added should be unique.
+        parameters
+        ----------
+        node: str, int, float, Node
+
+        """
         if self.__len__() <= self.__max_node:
             if type(node) in [str, int, float]:
                 node = Node(node)
@@ -93,6 +108,7 @@ class Graph(object):
                 if type(node) == Node or issubclass(node.__class__, Node):
                     self.__nodes.append(node)
                     node_id = self.get_node_id( node)
+                    self.__node_map[node_id] = node
                 else:
                     raise InvalidNodeTypeError("Expected object of type str, float, int, Node or subclass of Node but %s was given."%type(node))
                 self.connections[node_id] = defaultdict(int)
@@ -103,6 +119,23 @@ class Graph(object):
 
 
     def add_edge(self, _from, _to, weight=1):
+        """
+        Adds a edge to the graph connecting the _from and _to nodes,
+        the values passed to the parameters _from and _to must be a 
+        node in the graph or a node in the graph must contain the 
+        value passed in.
+        if the type of the graph object is scalar an edge will be added
+        from _to to _from.
+        parameters
+        ----------
+        _from:int,str,float,Node
+            this is the source from where the edge starts from
+        _to:int,str,float,Node
+            the destination of the edge
+        weight:int, str, float, default=1
+            this is the weight of the edge object connectiing the nodes
+            the default value is 1.
+        """
         if len(self.connections) <= self.max_edge:
             if type(_from) == Node or issubclass(_from.__class__, Node):
                 _from = self.get_node_id(_from)
@@ -120,10 +153,17 @@ class Graph(object):
                 node_to.add_node(node)
                 self.edges.append(edge2)
         else:
-            raise  MaxNodeError("Graph max size exceeded, expected %d node."%(self.max_edge)) 
+            raise  MaxNodeError("Graph max size exceded, expected %d node."%(self.max_edge)) 
 
 
-    def add_nodes_from_list(self, iterable):
+    def add_nodes_from_iterable(self, iterable):
+        """
+        Adds nodes from a an iterable to the graph.
+        Parameters
+        ----------
+        iterable:iter
+            an iterable object conataining nodes to be added to the graph
+        """
         for node in iterable:
             self.add_node(node)
 
@@ -147,11 +187,23 @@ class Graph(object):
     
 
     def from_dict(self, dictonary, weights=1):
+        """
+        creates and add node from a dictionary. The dictionary passed in must
+        have a key with an iterable value which contains all adjacents node, and 
+        node in the iterable must be in the dictionary or graph. The weight will be 
+        uniform for all nodes.
+        Parmeters
+        ---------
+        dictionary: dict
+            dictonary object thats holds weights and their connections
+        weights: int, str, float
+            uniform weight passed to all edges.
+        """
         for key in dictonary:
             node = Node(key)
             self.add_node(node)
             for edge in dictonary[key]:
-                if edge in dictonary.keys():
+                if edge in dictonary.keys() or self.__nodes:
                     self.add_edge(key, edge, weights)
                 else:
                     raise KeyError("Edge %s not in dictionary."%(edge))
@@ -159,6 +211,13 @@ class Graph(object):
 
 
     def is_cyclic(self):
+        """
+        Checks if the graph contains a cycle, if the graph type is scalar
+
+        returns
+        -------
+        bool
+        """
         if self.type != 'vector' or  self.type == 'V':
             raise GraphTypeError("cyclic check only works for vector type graphs")
         visited = {}
@@ -174,12 +233,22 @@ class Graph(object):
         
 
     def clear(self):
+        """
+        Clears all the graph content
+        """
         self.__nodes.clear()
         self.connections = {}
         self.edges.clear()
 
 
     def is_connected(self):
+        """
+        Checks if a scalar graph is connected or not.
+
+        returns
+        -------
+        bool
+        """
         if self.type == 'scalar' or  self.type == 'S':
             traverse = BFS(self)
             for node in self.__nodes:
@@ -191,6 +260,15 @@ class Graph(object):
 
     
     def display(self, weighted=False):
+        """
+        creates a plot of the graph.
+
+        parameters
+        ----------
+        weighted:bool
+            if true weights will be displayed
+
+        """
         _, ax1 = plt.subplots(1 ,figsize=(20, 15))
         if self.type == "vector" or  self.type == 'V':
             plot_graph_directed(self, ax1, len(self), weighted)
@@ -200,6 +278,14 @@ class Graph(object):
 
     
     def remove_edge(self, _from, _to):
+        """
+        removes edge connecting to nodes if it exist.
+
+        Parameters
+        ----------
+            _from:int, str, float
+            _to:int, str, float
+        """
         del self.connections[_from][_to]
         for i in range(len(self.edges)):
             if self.edges[i]._from == _from and self.edges[i]._to == _to:
@@ -214,6 +300,17 @@ class Graph(object):
                 break
 
     def get_node_id(self, node):
+        """
+        gets the value of the node object used in identifying 
+        the node
+        Parameters
+        ----------
+            node:Node
+        returns
+        -------
+        value:str, int, float, object
+
+        """
         for vertex in self.__nodes:
             if vertex == node:
                 v = node
