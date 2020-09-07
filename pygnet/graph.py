@@ -1,9 +1,11 @@
+from __future__ import absolute_import, division
 from collections import defaultdict
 from .components import Edge, Node
 from .exceptions import InvalidNodeTypeError, MaxNodeError, GraphTypeError
 from .utils import check_cycle
-from .algorithms.search import BFS
+from .algorithms.search import BFS, DFS
 from ._vis.layout import plot_graph_directed, plot_graph_undirected
+from pygnet import VECTOR, SCALAR
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -50,7 +52,7 @@ class Graph(object):
 
     """
 
-    def __init__(self, max_node=float("inf"), max_edge=float("inf"), type="scalar", ref="value"):
+    def __init__(self, max_node=float("inf"), max_edge=float("inf"), type=SCALAR, ref="value"):
         self.__max_node = max_node
         self.max_edge = max_edge
         self.type = type
@@ -140,7 +142,7 @@ class Graph(object):
             self.connections[_from][_to] = edge
             node.add_node(node_to)
             self.edges.append(edge)
-            if self.type == 'scalar' or self.type == 'S':
+            if self.type == SCALAR:
                 edge2 = Edge(_to, _from, weight)
                 self.connections[_to][_from] = edge2
                 node_to.add_node(node)
@@ -206,7 +208,7 @@ class Graph(object):
         -------
         bool
         """
-        if self.type != 'vector' or self.type == 'V':
+        if self.type != VECTOR:
             raise GraphTypeError(
                 "cyclic check only works for vector type graphs")
         visited = {}
@@ -236,7 +238,7 @@ class Graph(object):
         -------
         bool
         """
-        if self.type == 'scalar' or self.type == 'S':
+        if self.type == SCALAR:
             traverse = self.BFS()
             for node in self.__nodes:
                 if not node in traverse:
@@ -257,9 +259,9 @@ class Graph(object):
 
         """
         _, ax1 = plt.subplots(1, figsize=(20, 15))
-        if self.type == "vector" or self.type == 'V':
+        if self.type == VECTOR:
             plot_graph_directed(self, ax1, len(self), weighted)
-        else:
+        elif self.type == SCALAR:
             plot_graph_undirected(self, ax1, len(self), weighted)
 
     def remove_edge(self, _from, _to):
@@ -290,7 +292,7 @@ class Graph(object):
         the node
         Parameters
         ----------
-            node:Node
+        node:Node
         returns
         -------
         value:str, int, float, object
@@ -305,6 +307,37 @@ class Graph(object):
     def BFS(self, source=None, key=None):
         """
         An Impelemetaion of breath-first-search for tranversing a 
-        graph of getting a node 
+        graph of getting a node.
+        Parameters
+        ----------
+        source:int, str, float, optional
+            Value of the node to start the tranverse. if ommited the method
+            uses a random node as source.
+        key:int, str, float, optional
+            Value of the node to stop the tranverse. if ommited the method
+            stops when all  node in the graph are tranversed.
+        returns
+        -------
+        value: list
+            A list of the path tranversed in order from source to key.
         """
         return BFS(self, source, key)
+
+    def DFS(self, source=None, key=None):
+        """
+        An Impelemetaion of depth-first-search for tranversing a 
+        graph of getting a node.
+        Parameters
+        ----------
+        source:int, str, float, optional
+            Value of the node to start the tranverse. if ommited the method
+            uses a random node as source.
+        key:int, str, float, optional
+            Value of the node to stop the tranverse. if ommited the method
+            stops when all  node in the graph are tranversed.
+        returns
+        -------
+        value: list
+            A list of the path tranversed in order from source to key.
+        """
+        return DFS(self, source, key)
