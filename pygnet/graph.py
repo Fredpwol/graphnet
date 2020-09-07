@@ -50,7 +50,7 @@ class Graph(object):
 
     """
 
-    def __init__(self, max_node=float("inf"), max_edge=float("inf"), type="scalar", ref="value" ):
+    def __init__(self, max_node=float("inf"), max_edge=float("inf"), type="scalar", ref="value"):
         self.__max_node = max_node
         self.max_edge = max_edge
         self.type = type
@@ -60,15 +60,12 @@ class Graph(object):
         self.__nodes = []
         self.__node_map = {}
 
-
     def __len__(self):
         return len(self.__nodes)
-
 
     def __iter__(self):
         self.__counter = 0
         return self
-
 
     def __next__(self):
         if self.__counter < self.__len__():
@@ -78,19 +75,14 @@ class Graph(object):
         else:
             raise StopIteration
 
-
     def __getitem__(self, key):
-        print(self.__node_map)
         return self.__node_map[key]
-
 
     def __enter__(self):
         return self
 
-
-    def __exit__(self,exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.clear()
-
 
     def add_node(self, node):
         """
@@ -107,16 +99,17 @@ class Graph(object):
             if node not in self.__nodes:
                 if type(node) == Node or issubclass(node.__class__, Node):
                     self.__nodes.append(node)
-                    node_id = self.get_node_id( node)
+                    node_id = self.get_node_id(node)
                     self.__node_map[node_id] = node
                 else:
-                    raise InvalidNodeTypeError("Expected object of type str, float, int, Node or subclass of Node but %s was given."%type(node))
+                    raise InvalidNodeTypeError(
+                        "Expected object of type str, float, int, Node or subclass of Node but %s was given." % type(node))
                 self.connections[node_id] = defaultdict(int)
             else:
                 raise ValueError("Node instance alerady in graph network")
         else:
-            raise MaxNodeError("Graph max size exceeded, expected %d node."%(self.__max_node))
-
+            raise MaxNodeError(
+                "Graph max size exceeded, expected %d node." % (self.__max_node))
 
     def add_edge(self, _from, _to, weight=1):
         """
@@ -143,18 +136,18 @@ class Graph(object):
                 _to = self.get_node_id(_to)
             node = self[_from]
             node_to = self[_to]
-            edge =  Edge(node, node_to, weight)
+            edge = Edge(node, node_to, weight)
             self.connections[_from][_to] = edge
             node.add_node(node_to)
             self.edges.append(edge)
-            if self.type == 'scalar' or  self.type == 'S':
+            if self.type == 'scalar' or self.type == 'S':
                 edge2 = Edge(_to, _from, weight)
                 self.connections[_to][_from] = edge2
                 node_to.add_node(node)
                 self.edges.append(edge2)
         else:
-            raise  MaxNodeError("Graph max size exceded, expected %d node."%(self.max_edge)) 
-
+            raise MaxNodeError(
+                "Graph max size exceded, expected %d node." % (self.max_edge))
 
     def add_nodes_from_iterable(self, iterable):
         """
@@ -167,24 +160,21 @@ class Graph(object):
         for node in iterable:
             self.add_node(node)
 
-
     @property
     def graph_matrix(self):
         nodes = self.__nodes
         self.__adj_matrix = np.zeros((self.__len__(), self.__len__()))
         for i in range(self.__len__()):
-            id_i = self.get_node_id( nodes[i])
+            id_i = self.get_node_id(nodes[i])
             for j in range(self.__len__()):
-                id_j = self.get_node_id( nodes[j])
+                id_j = self.get_node_id(nodes[j])
                 edge = self.connections[id_i][id_j] if not self.connections[id_i][id_j] else self.connections[id_i][id_j].weight
                 self.__adj_matrix[i, j] = edge
         return self.__adj_matrix
 
-
     @property
     def get_nodes(self):
         return self.__nodes
-    
 
     def from_dict(self, dictonary, weights=1):
         """
@@ -206,9 +196,7 @@ class Graph(object):
                 if edge in dictonary.keys() or self.__nodes:
                     self.add_edge(key, edge, weights)
                 else:
-                    raise KeyError("Edge %s not in dictionary."%(edge))
-
-
+                    raise KeyError("Edge %s not in dictionary." % (edge))
 
     def is_cyclic(self):
         """
@@ -218,8 +206,9 @@ class Graph(object):
         -------
         bool
         """
-        if self.type != 'vector' or  self.type == 'V':
-            raise GraphTypeError("cyclic check only works for vector type graphs")
+        if self.type != 'vector' or self.type == 'V':
+            raise GraphTypeError(
+                "cyclic check only works for vector type graphs")
         visited = {}
         rec_stack = {}
         for node in self:
@@ -230,7 +219,6 @@ class Graph(object):
                 return True
 
         return False
-        
 
     def clear(self):
         """
@@ -240,7 +228,6 @@ class Graph(object):
         self.connections = {}
         self.edges.clear()
 
-
     def is_connected(self):
         """
         Checks if a scalar graph is connected or not.
@@ -249,16 +236,16 @@ class Graph(object):
         -------
         bool
         """
-        if self.type == 'scalar' or  self.type == 'S':
-            traverse = BFS(self)
+        if self.type == 'scalar' or self.type == 'S':
+            traverse = self.BFS()
             for node in self.__nodes:
                 if not node in traverse:
                     return False
             return True
         else:
-            raise GraphTypeError("Invalid graph type %s expected scalar"%(self.type))
+            raise GraphTypeError(
+                "Invalid graph type %s expected scalar" % (self.type))
 
-    
     def display(self, weighted=False):
         """
         creates a plot of the graph.
@@ -269,14 +256,12 @@ class Graph(object):
             if true weights will be displayed
 
         """
-        _, ax1 = plt.subplots(1 ,figsize=(20, 15))
-        if self.type == "vector" or  self.type == 'V':
+        _, ax1 = plt.subplots(1, figsize=(20, 15))
+        if self.type == "vector" or self.type == 'V':
             plot_graph_directed(self, ax1, len(self), weighted)
         else:
             plot_graph_undirected(self, ax1, len(self), weighted)
 
-
-    
     def remove_edge(self, _from, _to):
         """
         removes edge connecting to nodes if it exist.
@@ -291,7 +276,7 @@ class Graph(object):
             if self.edges[i]._from == _from and self.edges[i]._to == _to:
                 self.edges.pop(i)
                 break
-    
+
         src = self[_from]
         dest = self[_to]
         for i in range(len(src.adjacent_nodes)):
@@ -315,10 +300,11 @@ class Graph(object):
             if vertex == node:
                 v = node
                 break
-        return eval('v.%s'%self.ref)
+        return eval('v.%s' % self.ref)
 
-
-
-
-
-
+    def BFS(self, source=None, key=None):
+        """
+        An Impelemetaion of breath-first-search for tranversing a 
+        graph of getting a node 
+        """
+        return BFS(self, source, key)
