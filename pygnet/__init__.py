@@ -4,4 +4,4 @@ VECTOR = "vector"
 SCALAR = "scalar"
 
 from .components import *
-from .graph import Graph
+from .graph import Graph, GraphPriorityQueue

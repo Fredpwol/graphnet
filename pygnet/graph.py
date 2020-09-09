@@ -157,7 +157,7 @@ class Graph(object):
         Parameters
         ----------
         iterable:iter
-            an iterable object conataining nodes to be added to the graph
+            an iterable object containing nodes to be added to the graph
         """
         for node in iterable:
             self.add_node(node)
@@ -338,6 +338,122 @@ class Graph(object):
         returns
         -------
         value: list
-            A list of the path tranversed in order from source to key.
+            A list of the path traversed in order from source to key.
         """
         return DFS(self, source, key)
+
+
+
+
+class GraphPriorityQueue:
+    """
+    A priority queue data structure which stores node
+    and get them based on priority. if state is true nodes
+    will be gotten by priority and if their state value evaluate
+    to true.
+    Parameters
+    ----------
+    graph: Graph
+        graph object whose node will be stored in the queue.
+    type: {"min", "max"}, default="min"
+        the type of priority based on how the values in the 
+        graph will be retrived, if min the smallest value will
+        be prioritized and if max the largest value will be priortized.
+    state: boolean, default=False
+        this specifies if state will be used in the queue. If true an
+        attribute status will be created to hold the states of all the 
+        nodes.
+    Attibutes
+    ---------
+    type: {"min", "max"}, default="min"
+    queue: dict
+        this holds node and value pair, the value is what is used in 
+        as priority in getting items.
+    status: dict
+        if state is true this will be created and hold a dictionary of
+        nodes mapped with boolean.
+    """
+    def __init__(self, graph, type="min", state=False):
+        if type == 'min' or type == 'max':
+            self.type = type
+        else:
+            raise TypeError("type attribute most be 'min' or 'max'")
+        self.__graph = graph
+        self._top = float('inf') if self.type == 'min' else -float('inf')       
+        self.queue = dict()
+        self.__state = state
+        for node in self.__graph:
+            self.queue[node] = float('inf')
+        if self.__state:
+            self.status = dict()
+            for node in self.__graph:
+                self.status[node] = False
+        
+
+    def __repr__(self):
+        return str(list(self.queue.values()))
+
+
+
+    def get(self):
+        """
+        gets a node based on priority if the queue is'nt empty
+        returns: Node
+            if the queue is'nt empty returns a Node object else it
+            returns None.
+        """
+        if self.__state:
+            if all(self.status.values()):
+                return None
+        if len(self.queue) != 0:
+            sign = "<=" if self.type == "min" else ">=" if self.type == "max" else ''
+            state = '' if not self.__state else 'and (not self.status[node])'
+            for node in self.queue:
+                if eval("(self.queue[node] %s self._top %s)"%(sign, state)):
+                    self._top = self.queue[node]
+                    res = node
+            del self.queue[res]
+            if self.__state:
+                del self.status[res]
+            self._top = float('inf') if self.type == 'min' else -float('inf')
+            return res
+        return None
+        
+    def set_status(self, node, value):
+        """
+        Tries to set the status of the node if state is true
+        Parameters
+        ----------
+        node: Node
+            node object to change state
+        value: boolean
+            value to change the node state.
+        """
+        assert (value == True or value == False) and (self.__state)
+        self.status[node] = value
+    
+
+    def enqueue(self, node , value=0):
+        """
+        Inserts a node to the queue with the value to be used for
+        priotizing.
+        Parameters
+        ----------
+        node: Node
+            node object to insert
+        value:int, float, default=0
+            value to be used for priotizing the node object.
+        """
+        self.queue[node] = value
+
+    def is_empty(self):
+        """
+        Checks if the queue is empty
+        returns
+        -------
+        out:boolean
+            if True queue is empty else it's not.
+        """
+        if len(self.queue) !=0:
+            return False
+        return True
