@@ -16,10 +16,9 @@ class Node:
     Attributes
     ----------
     value:int, str or object
-
     adjacent_nodes : List(Node)
         This is a list of all adjacent node object connected to the node.
-    color
+    color:str, optional
     """
 
     def __init__(self, value, color=None):
@@ -69,8 +68,7 @@ class Edge:
     _from:Node
     _to:Node
     weight:str, int, float, default=None
-    
-    color:str, default=None
+    color:str, optional
 
     """
 
