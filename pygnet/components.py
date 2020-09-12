@@ -76,7 +76,7 @@ class Edge:
         self.weight = weight
         self._from = _from
         self._to = _to
-        self.color = "blue"
+        self.color = "k"
     
     def __repr__(self):
         return "Edge(src=%s, dest=%s, weight=%s)"%(self._from, self._to, self.weight)
