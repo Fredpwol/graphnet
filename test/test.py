@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
 
 
     def test_BFS(self):
-        self.assertEqual(BFS(self.g,1), [self.g[1], self.g[3]])
+        self.assertEqual(self.g.BFS(1), [self.g[1], self.g[3]])
 
 
     def test_iscyclic(self):
