@@ -248,21 +248,24 @@ class Graph(object):
             raise GraphTypeError(
                 "Invalid graph type %s expected scalar" % (self.type))
 
-    def display(self, weighted=False):
+    def display(self, weighted=False, weight_color=False, arrow_color=True):
         """
         creates a plot of the graph.
 
         parameters
         ----------
-        weighted:bool
-            if true weights will be displayed
-
+        weighted:bool, optional, default=False
+            if true weights will be displayed.
+        weight_color:bool, optional, default=False
+            if true the weights will be colored with the edge object color attribute.
+        arrow_color:bool, optional, default=True
+            if true the arrow will be colored with the edge object color attribute.
         """
         _, ax1 = plt.subplots(1, figsize=(20, 15))
         if self.type == VECTOR:
-            plot_graph_directed(self, ax1, len(self), weighted)
+            plot_graph_directed(self, ax1, len(self), weighted, weight_color, arrow_color)
         elif self.type == SCALAR:
-            plot_graph_undirected(self, ax1, len(self), weighted)
+            plot_graph_undirected(self, ax1, len(self), weighted, weight_color, arrow_color)
 
     def remove_edge(self, _from, _to):
         """
@@ -398,6 +401,7 @@ class GraphPriorityQueue:
     def get(self):
         """
         gets a node based on priority if the queue is'nt empty
+        
         returns: Node
             if the queue is'nt empty returns a Node object else it
             returns None.
