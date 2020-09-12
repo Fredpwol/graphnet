@@ -17,11 +17,14 @@ with Graph(type='vector') as g:
     for e in edges:
         g.add_edge(*e)
     print(g.graph_matrix)
-    cost = dijkstra(g,0,5,path=True)
+    print(g.DFS())
+    cost = dijkstra(g,0,4,path=True)
     print(cost)
-    for c in cost:
+    for i, c in enumerate(cost):
+        if i < len(cost)-1:
+            g.connections[g.get_node_id(cost[i])][g.get_node_id(cost[i+1])].color = "red"
         c.color = "red"
-    g.display(weighted=True)
+    g.display(weighted=True, weight_color=True,arrow_color=False)
     plt.show()
 
 # with Graph() as mst:
