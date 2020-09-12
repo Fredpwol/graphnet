@@ -1,7 +1,11 @@
+"""
+Graph search and tranverse algorithms.
+"""
 import queue
+import random
 
 
-def BFS(graph, source=None, key=None):
+def BFS(graph, source, key):
     source = graph[source]
 
     Q = queue.Queue(0)
@@ -27,8 +31,10 @@ def BFS(graph, source=None, key=None):
 
 
 def DFS(graph, source=None, key=None):
-    source = graph[source]
-
+    if source:
+        source = graph[source]
+    else:
+        source = random.choice(graph.get_nodes)
 
     def dfs_traverse(source, key=None, visited=None):
         if key:
