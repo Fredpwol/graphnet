@@ -1,5 +1,5 @@
 from ..exceptions import GraphTypeError
-from ..utils import GraphPriorityQueue
+from pygnet import GraphPriorityQueue
 from ..graph import Graph
 
 
@@ -30,7 +30,7 @@ def dijkstra(graph, _from, _to, path=False):
                 if path:
                     route[neighbour] = route[node] + [neighbour]
                 Q.enqueue(neighbour, dist[neighbour])
-        Q.set_state(node, True)
+        Q.set_status(node, True)
     to = graph[_to]
     res = dist[to] if not path else route[to]
 
