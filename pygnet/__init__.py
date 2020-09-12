@@ -5,3 +5,5 @@ SCALAR = "scalar"
 
 from .components import *
 from .graph import Graph, GraphPriorityQueue
+
+__all__ = ["Graph", "GraphPriorityQueue"]
