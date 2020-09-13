@@ -248,7 +248,7 @@ class Graph(object):
             raise GraphTypeError(
                 "Invalid graph type %s expected scalar" % (self.type))
 
-    def display(self, weighted=False, weight_color=False, arrow_color=True):
+    def display(self, weighted=False, weight_color=False, arrow_color=True, layout="random", polygon_radius=5):
         """
         creates a plot of the graph.
 
@@ -263,9 +263,9 @@ class Graph(object):
         """
         _, ax1 = plt.subplots(1, figsize=(20, 15))
         if self.type == VECTOR:
-            plot_graph_directed(self, ax1, len(self), weighted, weight_color, arrow_color)
+            plot_graph_directed(self, ax1, len(self), weighted, weight_color, arrow_color, layout, polygon_radius)
         elif self.type == SCALAR:
-            plot_graph_undirected(self, ax1, len(self), weighted, weight_color, arrow_color)
+            plot_graph_undirected(self, ax1, len(self), weighted, weight_color, arrow_color, layout, polygon_radius)
 
     def remove_edge(self, _from, _to):
         """
