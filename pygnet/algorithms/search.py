@@ -6,6 +6,22 @@ import random
 
 
 def BFS(graph, source, key):
+    """
+    An Impelemetaion of breath-first-search for tranversing a 
+    graph of getting a node.
+    Parameters
+    ----------
+    source:int, str, float, optional
+        Value of the node to start the tranverse. if ommited the method
+        uses a random node as source.
+    key:int, str, float, optional
+        Value of the node to stop the tranverse. if ommited the method
+        stops when all  node in the graph are tranversed.
+    returns
+    -------
+    value: list
+        A list of the path tranversed in order from source to key.
+    """
     source = graph[source]
 
     Q = queue.Queue(0)
@@ -29,8 +45,23 @@ def BFS(graph, source, key):
     return path
 
 
-
 def DFS(graph, source=None, key=None):
+    """
+    An Impelemetaion of depth-first-search for tranversing a 
+    graph of getting a node.
+    Parameters
+    ----------
+    source:int, str, float, optional
+        Value of the node to start the tranverse. if ommited the method
+        uses a random node as source.
+    key:int, str, float, optional
+        Value of the node to stop the tranverse. if ommited the method
+        stops when all  node in the graph are tranversed.
+    returns
+    -------
+    value: list
+        A list of the path traversed in order from source to key.
+    """
     if source:
         source = graph[source]
     else:
@@ -53,7 +84,7 @@ def DFS(graph, source=None, key=None):
                 dfs_traverse(node, visited=visited)
             visited.append(source)
 
-    if key != None: 
+    if key != None:
         assert source != None
         for adj_node in source.adjacent_nodes:
             res = dfs_traverse(adj_node, key)
@@ -62,14 +93,7 @@ def DFS(graph, source=None, key=None):
                 return res
     else:
         for node in graph:
-            visisted =[]
+            visisted = []
             dfs_traverse(node, visited=visisted)
         return visisted
     return None
-
-
-
-
-    
-
-
