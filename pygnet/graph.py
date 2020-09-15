@@ -3,7 +3,8 @@ from collections import defaultdict
 from .components import Edge, Node
 from .exceptions import InvalidNodeTypeError, MaxNodeError, GraphTypeError
 from .utils import check_cycle
-from .algorithms.search import BFS, DFS
+from .algorithms._search import BFS, DFS
+from .algorithms._sort import topological_sort
 from ._vis.layout import plot_graph_directed, plot_graph_undirected
 from pygnet import VECTOR, SCALAR
 import matplotlib.pyplot as plt
@@ -248,7 +249,7 @@ class Graph(object):
             raise GraphTypeError(
                 "Invalid graph type %s expected scalar" % (self.type))
 
-    def display(self, weighted=False, weight_color=False, arrow_color=True, layout="random", polygon_radius=5):
+    def display(self, weighted=False, weight_color=False, arrow_color=True, layout="polygon", polygon_radius=5):
         """
         creates a plot of the graph.
 
@@ -260,8 +261,12 @@ class Graph(object):
             if true the weights will be colored with the edge object color attribute.
         arrow_color:bool, optional, default=True
             if true the arrow will be colored with the edge object color attribute.
+        layout: optional, {random, polygon}, default=polygon
+            The layout used to arrange the nodes in the plot
+        polygon_radius: int, float, default=5
+            if polygon layout is used this defines the radius of the polygon shape.        
         """
-        _, ax1 = plt.subplots(1, figsize=(20, 15))
+        _, ax1 = plt.subplots(1, figsize=(20, 20))
         if self.type == VECTOR:
             plot_graph_directed(self, ax1, len(self), weighted, weight_color, arrow_color, layout, polygon_radius)
         elif self.type == SCALAR:
@@ -306,6 +311,17 @@ class Graph(object):
                 v = node
                 break
         return eval('v.%s' % self.ref)
+    
+    def topological_sort(self):
+        """
+        Sorts the nodes if graph type is vector
+        returns
+        -------
+        res:List
+            a list containing  all the node in the graph instance
+            in a sorted form
+        """
+        return topological_sort(self)
 
     def BFS(self, source=None, key=None):
         """
