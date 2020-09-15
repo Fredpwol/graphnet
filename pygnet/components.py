@@ -18,13 +18,26 @@ class Node:
     value:int, str or object
     adjacent_nodes : List(Node)
         This is a list of all adjacent node object connected to the node.
-    color:str, optional
+    radius: int, float default:0
+        The radius of the node when visualization value must be between -1 and 1.
     """
 
-    def __init__(self, value, color=None):
+    def __init__(self, value=None, color=None):
         self.value = value
         self.adjacent_nodes = []
         self.color = "blue"
+        self.__node_radius = 0
+
+    @property
+    def radius(self):
+        return self.__node_radius
+    
+    @radius.setter
+    def radius(self, value):
+        if value < -1 or value > 1:
+            raise ValueError("radius must be a float between -1 and 1.")
+        else:
+            self.__node_radius = value
 
 
     def add_node(self, node):
@@ -69,6 +82,10 @@ class Edge:
     _to:Node
     weight:str, int, float, default=None
     color:str, optional
+    fontsize:int default=12
+        The fontsize of the weight.
+    linewidth:None, float, default=None
+        Width of the line connecting nodes together.
 
     """
 
@@ -77,10 +94,20 @@ class Edge:
         self._from = _from
         self._to = _to
         self.color = "k"
+        self.fontsize = 12
+        self.__linewidth = None
+    
+    @property
+    def linewidth(self):
+        return self.__linewidth
+    
+    @linewidth.setter
+    def linewidth(self, value):
+        if value < 0 or value > 1:
+            raise ValueError("linewidth must be a float between 0 and 1")
+        else:
+            self.__linewidth = value
+
     
     def __repr__(self):
         return "Edge(src=%s, dest=%s, weight=%s)"%(self._from, self._to, self.weight)
-
-
-
-
