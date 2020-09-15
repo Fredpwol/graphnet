@@ -4,6 +4,25 @@ from ..graph import Graph
 
 
 def dijkstra(graph, _from, _to, path=False):
+    """
+    Dijkstra algorithm to find the shortest path between two nodes
+
+    Parameters
+    ----------
+    graph: Graph
+        graph instance to where the the nodes are, graph type must be vector
+    _from:str, float, int
+        the start point to begin tranverse
+    _to:str, float, int
+        the end point to stop tranversing
+    path:bool
+        if path is True returns the shortest path list from _from to _to inclusive
+        else it returns the shortest path distance.
+    
+    returns
+    ------
+    res:int, float, list
+    """
     if graph.is_cyclic():
         raise GraphTypeError("Graph contains circle.")
     elif graph.type != 'vector' or  graph.type == 'V':
@@ -39,8 +58,18 @@ def dijkstra(graph, _from, _to, path=False):
 #TODO Implement bellman ford algorithm,
 
 
-#TODO Implement minimum spanning tree
 def minimum_spanning_tree(graph):
+    """
+    Gets the minimum spanning tree of a undirected graph.
+    Parameters
+    ----------
+    graph:Graph
+        The graph object to get the mst of, graph type must be scalar
+    returns
+    -------
+    tree: Graph
+        A copy of the original graph object as a minimum spanning tree.
+    """
     if graph.type == "scalar" or graph.type == 'S':
         key = {}
         parent = {}
