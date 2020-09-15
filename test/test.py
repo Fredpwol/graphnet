@@ -3,16 +3,27 @@ if __name__ == "__main__" and __package__ is None:
     from os.path import dirname as dir
 
     path.append(dir(path[0]))
-    __package__ = "examples"
+    __package__ = "pygnet"
 
 
 import unittest
 import numpy as np
-from pygnet import Node
-from pygnet import Graph
-from pygnet.algorithms.search import BFS
-from pygnet.algorithms.sort import topological_sort
-from pygnet.algorithms.path import dijkstra
+from pygnet import Graph, Node, VECTOR
+from pygnet.algorithms import dijkstra
+
+persons = [{"name":"frank", "age":19, "sex":"M"},
+            {"name": "sam", "age": 22, "sex":"M"},
+            {"name":"jane", "age":21, "sex":"F"},
+            {"name":"sarah", "age":34, "sex":"F"}]
+class Person(Node):
+    def __init__(self, name, age, sex):
+        Node.__init__(self)
+        self.name = name
+        self.age = age
+        self.sex = sex
+    
+    def __repr__(self):
+        return "Person(name=%s, age=%s, sex=%s)"%(self.name, self.age, self.sex)
 
 
 class Test(unittest.TestCase):
@@ -41,7 +52,7 @@ class Test(unittest.TestCase):
 
 
     def test_iscyclic(self):
-        self.g = Graph(type='vector')
+        self.g = Graph(type=VECTOR)
         for i in range(5):
             self.g.add_node(Node(i))
         self.edge_list = [(0,1),(0,2),(1,4),(1,3),(2,1),(2,3),(3,0),(4,3)]
@@ -51,14 +62,23 @@ class Test(unittest.TestCase):
     
 
     def test_topological_sort(self):
-        self.g = Graph(type='vector')
+        self.g = Graph(type=VECTOR)
         for i in range(6):
             self.g.add_node(Node(i))
         self.edge_list = [(5,2),(5,0),(4,0),(4,1),(2,3),(3,1)]
         for x, y in self.edge_list:
             self.g.add_edge(x, y)
-        sort = [node.value for node in topological_sort(self.g)]
+        sort = [node.value for node in self.g.topological_sort()]
         self.assertEqual(sort , [4,5,2,0,3,1])
+    
+    def test_inherit_node(self):
+        self.g = Graph(ref="name")
+        obj = []
+        for pes in persons:
+            obj.append(Person(**pes))
+        self.g.add_nodes_from_iterable(obj)
+        self.assertAlmostEqual(obj, self.g.get_nodes)
+        
 
 if __name__ == '__main__':
     unittest.main()
