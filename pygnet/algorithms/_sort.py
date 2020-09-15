@@ -1,9 +1,22 @@
 from ..exceptions import GraphTypeError
+from pygnet import VECTOR
 import queue
 
 
 def topological_sort(graph):
-    if graph.type == 'vector':
+    """
+    Sorts the nodes if graph type is vector
+    Parameters
+    ----------
+    graph:Graph
+
+    returns
+    -------
+    res:List
+        a list containing  all the node in the graph instance
+        in a sorted form
+    """
+    if graph.type == VECTOR:
         if not graph.is_cyclic():
             res = []
             Q = queue.Queue()
