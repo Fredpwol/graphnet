@@ -82,7 +82,7 @@ class Edge:
     _to:Node
     weight:str, int, float, default=None
     color:str, optional
-    fontsize:int default=12
+    fontsize:int default=0
         The fontsize of the weight.
     linewidth:None, float, default=None
         Width of the line connecting nodes together.
@@ -94,7 +94,7 @@ class Edge:
         self._from = _from
         self._to = _to
         self.color = "k"
-        self.fontsize = 12
+        self.__fontsize = 0
         self.__linewidth = None
     
     @property
@@ -107,6 +107,17 @@ class Edge:
             raise ValueError("linewidth must be a float between 0 and 1")
         else:
             self.__linewidth = value
+    
+    @property
+    def fontsize(self):
+        return self.__fontsize
+    
+    @fontsize.setter
+    def fontsize(self, value):
+        if value < -1 or value > 1:
+            raise ValueError("fontsize must be a float between -1 and 1")
+        else:
+            self.__fontsize = value
 
     
     def __repr__(self):
