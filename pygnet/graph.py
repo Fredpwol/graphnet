@@ -162,6 +162,20 @@ class Graph(object):
         """
         for node in iterable:
             self.add_node(node)
+    
+    def add_edges_from_iterable(self, iterable):
+        """
+        Adds nodes edge a an iterable to the graph.
+        Parameters
+        ----------
+        iterable:iter
+            an iterable object containing a iterable with size of 3 or 2
+            where the first two values are values of nodes in the graph
+            and if there's a third value it will be used as the weight of
+            the edge to be added to the graph
+        """
+        for e in iterable:
+            self.add_edge(*e)
 
     @property
     def graph_matrix(self):
@@ -249,7 +263,7 @@ class Graph(object):
             raise GraphTypeError(
                 "Invalid graph type %s expected scalar" % (self.type))
 
-    def display(self, weighted=False, weight_color=False, arrow_color=True, layout="polygon", polygon_radius=5):
+    def display(self, weighted=False, weight_color=False, arrow_color=True, layout="polygon", polygon_radius=5, attr=None, ax=None):
         """
         creates a plot of the graph.
 
@@ -264,13 +278,22 @@ class Graph(object):
         layout: optional, {random, polygon}, default=polygon
             The layout used to arrange the nodes in the plot
         polygon_radius: int, float, default=5
-            if polygon layout is used this defines the radius of the polygon shape.        
+            if polygon layout is used this defines the radius of the polygon shape.
+        attr:None, str, int, object, default=None
+            The attribute of the Node object to be used as label. if ommitted the default value
+            will be the ref attribute of the graph.
+        ax:.axes.Axes, default=None
+            An axis object to plot the graph, if not specified a default axis will be created.
+            
         """
-        _, ax1 = plt.subplots(1, figsize=(20, 20))
+        if attr == None:
+            attr = self.ref
+        if not ax:
+            _, ax = plt.subplots(1, figsize=(20, 20))
         if self.type == VECTOR:
-            plot_graph_directed(self, ax1, len(self), weighted, weight_color, arrow_color, layout, polygon_radius)
+            plot_graph_directed(self, ax, len(self), weighted, weight_color, arrow_color, layout, polygon_radius, attr)
         elif self.type == SCALAR:
-            plot_graph_undirected(self, ax1, len(self), weighted, weight_color, arrow_color, layout, polygon_radius)
+            plot_graph_undirected(self, ax, len(self), weighted, weight_color, arrow_color, layout, polygon_radius, attr)
 
     def remove_edge(self, _from, _to):
         """
