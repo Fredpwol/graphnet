@@ -1,6 +1,5 @@
 from ..exceptions import GraphTypeError
-from pygnet import GraphPriorityQueue
-from ..graph import Graph
+
 
 
 def dijkstra(graph, _from, _to, path=False):
@@ -23,6 +22,7 @@ def dijkstra(graph, _from, _to, path=False):
     ------
     res:int, float, list
     """
+    from ..graph import GraphPriorityQueue
     if graph.is_cyclic():
         raise GraphTypeError("Graph contains circle.")
     elif graph.type != 'vector' or  graph.type == 'V':
@@ -39,7 +39,6 @@ def dijkstra(graph, _from, _to, path=False):
     Q.enqueue(source,0)
     dist[source] = 0
     while not Q.is_empty():
-        print(Q)
         node = Q.get()
         node_id = graph.get_node_id(node)
         for neighbour in node.adjacent_nodes:
@@ -70,6 +69,7 @@ def minimum_spanning_tree(graph):
     tree: Graph
         A copy of the original graph object as a minimum spanning tree.
     """
+    from ..graph import Graph
     if graph.type == "scalar" or graph.type == 'S':
         key = {}
         parent = {}
