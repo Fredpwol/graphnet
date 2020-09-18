@@ -9,7 +9,7 @@ COORDSB = "data"
 
 
 @preproccess_plot
-def plot_graph(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius, arrowstyle, weight_color, arrow_color):
+def plot_graph(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius, attr, arrowstyle, weight_color, arrow_color):
     """
     creates a plot of nodes and edges connected by a ConnectionPatch object.
     """
@@ -29,11 +29,12 @@ def plot_graph(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius,
                 T_color = "k" if not weight_color else A_color
                 x_mid, y_mid = (x_prime+x_i) * 0.5, (y_prime+y_i) * 0.5
                 weight = edge.weight
-                ax.text(x_mid, y_mid, str(weight), fontsize=edge.fontsize, color=T_color)
+                fontsize = 12 / n + 12
+                ax.text(x_mid, y_mid, str(weight), fontsize=edge.fontsize*fontsize+fontsize, color=T_color)
             ax.add_artist(con)
 
 
-def plot_graph_directed(graph, ax, n, weighted, weight_color, arrow_color, layout, polygon_radius):
+def plot_graph_directed(graph, ax, n, weighted, weight_color, arrow_color, layout, polygon_radius, attr):
     """
     plots a directed graph with nodes as points and edges ass arrows connecting them.
 
@@ -57,10 +58,10 @@ def plot_graph_directed(graph, ax, n, weighted, weight_color, arrow_color, layou
         if polygon layout is used this defines the radius of the polygon shape.  
     """
     plot_graph(graph, ax, n, weighted, 30, 30, layout,
-               polygon_radius, "-|>", weight_color, arrow_color)
+               polygon_radius, attr, "-|>", weight_color, arrow_color)
 
 
-def plot_graph_undirected(graph, ax, n, weighted, weight_color, arrow_color, layout, polygon_radius):
+def plot_graph_undirected(graph, ax, n, weighted, weight_color, arrow_color, layout, polygon_radius, attr):
     """
     plots a  undirected graph with nodes as points and edges as lines connecting them.
 
@@ -84,4 +85,4 @@ def plot_graph_undirected(graph, ax, n, weighted, weight_color, arrow_color, lay
         if polygon layout is used this defines the radius of the polygon shape.  
     """
     plot_graph(graph, ax, n, weighted, 1, 1, layout,
-               polygon_radius, "-", weight_color, arrow_color)
+               polygon_radius, attr, "-", weight_color, arrow_color)

@@ -6,7 +6,7 @@ def preproccess_plot(func):
     """
     creates coordinate in the plot for nodes. 
     """
-    def wrapper(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius, *args, **kwargs):
+    def wrapper(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius, attr, *args, **kwargs):
         space = np.linspace(0,1,n+1)
         wrapper.scale = 100 // (n+1)
         size = wrapper.scale + 10
@@ -26,14 +26,14 @@ def preproccess_plot(func):
         for i, node in enumerate(wrapper.nodes):
                 wrapper.points[node] = (x[i], y[i]) 
 
-        func(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius, *args, **kwargs)
+        func(graph, ax, n, weighted, shrinkA, shrinkB, layout, polygon_radius, attr, *args, **kwargs)
         for i, node in enumerate(wrapper.nodes):
             ax.plot(x[i], y[i], "o",markersize=size + size * node.radius, color=node.color)
 
         for node in wrapper.points:
             #
             x, y = wrapper.points[node]
-            value = graph.get_node_id(node)
+            value = eval('node.%s'%attr)
             ax.annotate(value, (x, y))
     wrapper.scale = 0
     wrapper.points = dict()
