@@ -1,5 +1,5 @@
 from ..exceptions import GraphTypeError
-from pygnet import VECTOR
+from graphnet import VECTOR
 import queue
 
 

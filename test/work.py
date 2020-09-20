@@ -7,16 +7,16 @@ if __name__ == "__main__" and __package__ is None:
     from os.path import dirname as dir
 
     path.append(dir(path[0]))
-    __package__ = "pygnet"
+    __package__ = "graphnet"
 
 import matplotlib.pyplot as plt
 import random
 import numpy as np
 from test import persons, Person
-from pygnet.algorithms.path import dijkstra, minimum_spanning_tree
-from pygnet import Graph, Node, VECTOR
+from graphnet.algorithms.path import dijkstra, minimum_spanning_tree
+from graphnet import Graph, Node, VECTOR
 
-_, ax = plt.subplots(1, squeeze=False)
+_, ax = plt.subplots(2,2, squeeze=False)
 
 
 class VisualTest:
@@ -89,7 +89,7 @@ class VisualTest:
 
 if __name__ == "__main__":
     cases = VisualTest()
-    # cases.test_mst_vis()
+    cases.test_mst_vis()
     cases.test_dijkstra_vis()
-    # cases.test_multiple_random_nodes(10, 20)
+    cases.test_multiple_random_nodes(10, 20)
     plt.show()

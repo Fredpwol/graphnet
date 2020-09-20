@@ -1,5 +1,5 @@
 """
-Pygnet
+Graphnet
 =====
 A lightweight library for working and visualizing graphs and network
 it also comes with some usefull graph algorithm.

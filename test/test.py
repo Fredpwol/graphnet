@@ -3,13 +3,13 @@ if __name__ == "__main__" and __package__ is None:
     from os.path import dirname as dir
 
     path.append(dir(path[0]))
-    __package__ = "pygnet"
+    __package__ = "graphnet"
 
 
 import unittest
 import numpy as np
-from pygnet import Graph, Node, VECTOR
-from pygnet.algorithms import dijkstra
+from graphnet import Graph, Node, VECTOR
+from graphnet.algorithms import dijkstra
 
 persons = [{"name":"frank", "age":19, "sex":"M"},
             {"name": "sam", "age": 22, "sex":"M"},

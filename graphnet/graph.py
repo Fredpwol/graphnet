@@ -6,7 +6,7 @@ from .utils import check_cycle
 from .algorithms._search import BFS, DFS
 from .algorithms._sort import topological_sort
 from ._vis.layout import plot_graph_directed, plot_graph_undirected
-from pygnet import VECTOR, SCALAR
+from graphnet import VECTOR, SCALAR
 import matplotlib.pyplot as plt
 import numpy as np
 
