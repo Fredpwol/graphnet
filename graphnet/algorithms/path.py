@@ -1,7 +1,6 @@
 from ..exceptions import GraphTypeError
 
 
-
 def dijkstra(graph, _from, _to, path=False):
     """
     Dijkstra algorithm to find the shortest path between two nodes
@@ -17,7 +16,7 @@ def dijkstra(graph, _from, _to, path=False):
     path:bool
         if path is True returns the shortest path list from _from to _to inclusive
         else it returns the shortest path distance.
-    
+
     returns
     ------
     res:int, float, list
@@ -25,8 +24,8 @@ def dijkstra(graph, _from, _to, path=False):
     from ..graph import GraphPriorityQueue
     if graph.is_cyclic():
         raise GraphTypeError("Graph contains circle.")
-    elif graph.type != 'vector' or  graph.type == 'V':
-        raise GraphTypeError("Graph type most be vector not %s"%(graph.type))
+    elif graph.type != 'vector' or graph.type == 'V':
+        raise GraphTypeError("Graph type most be vector not %s" % (graph.type))
 
     source = graph[_from]
     dist = {}
@@ -36,7 +35,7 @@ def dijkstra(graph, _from, _to, path=False):
         route = {}
         route[source] = [source]
     Q = GraphPriorityQueue(graph, type='min', state=True)
-    Q.enqueue(source,0)
+    Q.enqueue(source, 0)
     dist[source] = 0
     while not Q.is_empty():
         node = Q.get()
@@ -44,7 +43,8 @@ def dijkstra(graph, _from, _to, path=False):
         for neighbour in node.adjacent_nodes:
             neigh_id = graph.get_node_id(neighbour)
             if dist[neighbour] > dist[node] + graph.connections[node_id][neigh_id].weight:
-                dist[neighbour] = dist[node] + graph.connections[node_id][neigh_id].weight
+                dist[neighbour] = dist[node] + \
+                    graph.connections[node_id][neigh_id].weight
                 if path:
                     route[neighbour] = route[node] + [neighbour]
                 Q.enqueue(neighbour, dist[neighbour])
@@ -54,7 +54,7 @@ def dijkstra(graph, _from, _to, path=False):
 
     return res
 
-#TODO Implement bellman ford algorithm,
+# TODO Implement bellman ford algorithm,
 
 
 def minimum_spanning_tree(graph):
@@ -88,7 +88,8 @@ def minimum_spanning_tree(graph):
             src = None
             for node in visited:
                 for neigh in node.adjacent_nodes:
-                    cost = graph.connections[graph.get_node_id(node)][graph.get_node_id(neigh)].weight
+                    cost = graph.connections[graph.get_node_id(
+                        node)][graph.get_node_id(neigh)].weight
                     if cost < min_cost and neigh not in visited:
                         min_cost = cost
                         dest = neigh
@@ -99,16 +100,12 @@ def minimum_spanning_tree(graph):
 
         for node in parent:
             node.adjacent_nodes.clear()
-            tree.add_node(node)            
-        
+            tree.add_node(node)
+
         for node in parent:
             if parent[node] != None:
                 tree.add_edge(parent[node], node, key[node])
         return tree
-        
+
     else:
-        raise GraphTypeError("Graph type most be vector not %s"%(graph.type))
-
-
-
-
+        raise GraphTypeError("Graph type most be vector not %s" % (graph.type))
