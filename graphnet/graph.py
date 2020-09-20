@@ -206,14 +206,10 @@ class Graph(object):
         weights: int, str, float
             uniform weight passed to all edges.
         """
+        self.add_nodes_from_iterable(list(dictonary.keys()))
         for key in dictonary:
-            node = Node(key)
-            self.add_node(node)
             for edge in dictonary[key]:
-                if edge in dictonary.keys() or self.__nodes:
-                    self.add_edge(key, edge, weights)
-                else:
-                    raise KeyError("Edge %s not in dictionary." % (edge))
+                self.add_edge(key, edge, weights)
 
     def is_cyclic(self):
         """
