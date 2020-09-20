@@ -13,4 +13,6 @@ SCALAR = "scalar"
 from .components import Node, Edge
 from .graph import Graph, GraphPriorityQueue
 
+__author__ = "Fredrick Pwol"
+__version__ = "0.1.0"
 __all__ = ["Graph", "GraphPriorityQueue"]
