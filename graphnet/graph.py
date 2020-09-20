@@ -20,29 +20,29 @@ class Graph(object):
     ----------
     max_node:int, float, optional, default=infinity
         the maximum amount of nodes that can be added to the graph,
-        default is infinty which means in theory nodes can be added
-        to the graph indefinetly.
+        default is infinity which means in theory nodes can be added
+        to the graph indefinitely.
     max_edge:int, float, optional, default=infinity
         the maximum amount of edges that can be added to the graph,
-        default is inifinty
+        default is infinity
     type:{'scalar'or'S', 'vector'or'V'},optional, default='scalar'
         this specifies the graph type, the are two graph types 'vector'
         which represents directional graphs and 'scalar' which represents
-        undirectional graphs. the type of of graph determines the behaviour
+        un-directional graphs. the type of of graph determines the behavior
         of the graph instance and which algorithm work with it. optionally 
         you can substutute 'scalar' with 'S' and 'vector' with 'V'.
     ref:str,optional,default="value"
-        the attribute used by the graph for refrencing the node object passed in
+        the attribute used by the graph for referencing the node object passed in
         for identification and accessing as key value for the graph. change this
         if you are using a inherited node object to the object identifier else if
-        your'e using the built in Node class directly then leave it as default.
+        you're using the built in Node class directly then leave it as default.
 
     Attributes
     ----------
     edges:list
         This is a list of all edges in the graph instance
     connections:dict<defaultdict>
-        A dictionary thats maps each node to its neighbour with an edge, a node 
+        A dictionary thats maps each node to its neighbor with an edge, a node 
         in the connection dictionary contains a default dict and in the default dict
         the adjacent node is mapped with its edge object and if there is no relationship
         with the two node 0 will be returned.
@@ -109,7 +109,7 @@ class Graph(object):
                         "Expected object of type str, float, int, Node or subclass of Node but %s was given." % type(node))
                 self.connections[node_id] = defaultdict(int)
             else:
-                raise ValueError("Node instance alerady in graph network")
+                raise ValueError("Node instance already in graph network")
         else:
             raise MaxNodeError(
                 "Graph max size exceeded, expected %d node." % (self.__max_node))
@@ -129,7 +129,7 @@ class Graph(object):
         _to:int,str,float,Node
             the destination of the edge
         weight:int, str, float, default=1
-            this is the weight of the edge object connectiing the nodes
+            this is the weight of the edge object connecting the nodes
             the default value is 1.
         """
         if len(self.connections) <= self.max_edge:
@@ -150,7 +150,7 @@ class Graph(object):
                 self.edges.append(edge2)
         else:
             raise MaxNodeError(
-                "Graph max size exceded, expected %d node." % (self.max_edge))
+                "Graph max size exceeded, expected %d node." % (self.max_edge))
 
     def add_nodes_from_iterable(self, iterable):
         """
@@ -162,7 +162,7 @@ class Graph(object):
         """
         for node in iterable:
             self.add_node(node)
-    
+
     def add_edges_from_iterable(self, iterable):
         """
         Adds nodes edge a an iterable to the graph.
@@ -193,7 +193,7 @@ class Graph(object):
     def get_nodes(self):
         return self.__nodes
 
-    def from_dict(self, dictonary, weights=1):
+    def from_dict(self, dictionary, weights=1):
         """
         creates and add node from a dictionary. The dictionary passed in must
         have a key with an iterable value which contains all adjacents node, and 
@@ -202,13 +202,13 @@ class Graph(object):
         Parmeters
         ---------
         dictionary: dict
-            dictonary object thats holds weights and their connections
+            dictionary object thats holds weights and their connections
         weights: int, str, float
             uniform weight passed to all edges.
         """
-        self.add_nodes_from_iterable(list(dictonary.keys()))
-        for key in dictonary:
-            for edge in dictonary[key]:
+        self.add_nodes_from_iterable(list(dictionary.keys()))
+        for key in dictionary:
+            for edge in dictionary[key]:
                 self.add_edge(key, edge, weights)
 
     def is_cyclic(self):
@@ -276,20 +276,22 @@ class Graph(object):
         polygon_radius: int, float, default=5
             if polygon layout is used this defines the radius of the polygon shape.
         attr:None, str, int, object, default=None
-            The attribute of the Node object to be used as label. if ommitted the default value
+            The attribute of the Node object to be used as label. if omitted the default value
             will be the ref attribute of the graph.
         ax:.axes.Axes, default=None
             An axis object to plot the graph, if not specified a default axis will be created.
-            
+
         """
         if attr == None:
             attr = self.ref
         if not ax:
             _, ax = plt.subplots(1, figsize=(20, 20))
         if self.type == VECTOR:
-            plot_graph_directed(self, ax, len(self), weighted, weight_color, arrow_color, layout, polygon_radius, attr)
+            plot_graph_directed(self, ax, len(
+                self), weighted, weight_color, arrow_color, layout, polygon_radius, attr)
         elif self.type == SCALAR:
-            plot_graph_undirected(self, ax, len(self), weighted, weight_color, arrow_color, layout, polygon_radius, attr)
+            plot_graph_undirected(self, ax, len(
+                self), weighted, weight_color, arrow_color, layout, polygon_radius, attr)
 
     def remove_edge(self, _from, _to):
         """
@@ -330,7 +332,7 @@ class Graph(object):
                 v = node
                 break
         return eval('v.%s' % self.ref)
-    
+
     def topological_sort(self):
         """
         Sorts the nodes if graph type is vector
@@ -349,10 +351,10 @@ class Graph(object):
         Parameters
         ----------
         source:int, str, float, optional
-            Value of the node to start the tranverse. if ommited the method
+            Value of the node to start the tranverse. if omitted the method
             uses a random node as source.
         key:int, str, float, optional
-            Value of the node to stop the tranverse. if ommited the method
+            Value of the node to stop the tranverse. if omitted the method
             stops when all  node in the graph are tranversed.
         returns
         -------
@@ -368,10 +370,10 @@ class Graph(object):
         Parameters
         ----------
         source:int, str, float, optional
-            Value of the node to start the tranverse. if ommited the method
+            Value of the node to start the tranverse. if omitted the method
             uses the first node in the graph as source.
         key:int, str, float, optional
-            Value of the node to stop the tranverse. if ommited the method
+            Value of the node to stop the tranverse. if omitted the method
             stops when all  node in the graph are tranversed.
         returns
         -------
@@ -379,8 +381,6 @@ class Graph(object):
             A list of the path traversed in order from source to key.
         """
         return DFS(self, source, key)
-
-
 
 
 class GraphPriorityQueue:
@@ -396,12 +396,12 @@ class GraphPriorityQueue:
     type: {"min", "max"}, default="min"
         the type of priority based on how the values in the 
         graph will be retrived, if min the smallest value will
-        be prioritized and if max the largest value will be priortized.
+        be prioritized and if max the largest value will be prioritized.
     state: boolean, default=False
         this specifies if state will be used in the queue. If true an
         attribute status will be created to hold the states of all the 
         nodes.
-    Attibutes
+    Attributes
     ---------
     type: {"min", "max"}, default="min"
     queue: dict
@@ -411,13 +411,14 @@ class GraphPriorityQueue:
         if state is true this will be created and hold a dictionary of
         nodes mapped with boolean.
     """
+
     def __init__(self, graph, type="min", state=False):
         if type == 'min' or type == 'max':
             self.type = type
         else:
             raise TypeError("type attribute most be 'min' or 'max'")
         self.__graph = graph
-        self._top = float('inf') if self.type == 'min' else -float('inf')       
+        self._top = float('inf') if self.type == 'min' else -float('inf')
         self.queue = dict()
         self.__state = state
         for node in self.__graph:
@@ -426,19 +427,16 @@ class GraphPriorityQueue:
             self.status = dict()
             for node in self.__graph:
                 self.status[node] = False
-        
 
     def __repr__(self):
         return str(list(self.queue.values()))
 
-
-
     def get(self):
         """
-        gets a node based on priority if the queue is'nt empty
-        
+        gets a node based on priority if the queue isn't empty
+
         returns: Node
-            if the queue is'nt empty returns a Node object else it
+            if the queue isn't empty returns a Node object else it
             returns None.
         """
         if self.__state:
@@ -448,7 +446,7 @@ class GraphPriorityQueue:
             sign = "<=" if self.type == "min" else ">=" if self.type == "max" else ''
             state = '' if not self.__state else 'and (not self.status[node])'
             for node in self.queue:
-                if eval("(self.queue[node] %s self._top %s)"%(sign, state)):
+                if eval("(self.queue[node] %s self._top %s)" % (sign, state)):
                     self._top = self.queue[node]
                     res = node
             del self.queue[res]
@@ -457,7 +455,7 @@ class GraphPriorityQueue:
             self._top = float('inf') if self.type == 'min' else -float('inf')
             return res
         return None
-        
+
     def set_status(self, node, value):
         """
         Tries to set the status of the node if state is true
@@ -470,18 +468,17 @@ class GraphPriorityQueue:
         """
         assert (value == True or value == False) and (self.__state)
         self.status[node] = value
-    
 
-    def enqueue(self, node , value=0):
+    def enqueue(self, node, value=0):
         """
         Inserts a node to the queue with the value to be used for
-        priotizing.
+        prioritizing.
         Parameters
         ----------
         node: Node
             node object to insert
         value:int, float, default=0
-            value to be used for priotizing the node object.
+            value to be used for prioritizing the node object.
         """
         self.queue[node] = value
 
@@ -493,6 +490,6 @@ class GraphPriorityQueue:
         out:boolean
             if True queue is empty else it's not.
         """
-        if len(self.queue) !=0:
+        if len(self.queue) != 0:
             return False
         return True

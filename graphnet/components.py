@@ -42,7 +42,7 @@ class Node:
 
     def add_node(self, node):
         """
-        adds connected node in a graph to the adjecent_nodes list of the Node object.
+        adds connected node in a graph to the adjacent_nodes list of the Node object.
 
         Parameters
         ----------
