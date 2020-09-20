@@ -51,6 +51,13 @@ class Node:
         """
         self.adjacent_nodes.append(node)
 
+    def __eq__(self, other):
+        if type(other) == type(self):
+            return self.value == other.value
+        return False
+
+    def __hash__(self):
+        return hash(self.value)
 
     def __repr__(self):
         return "Node(%s)"%str(self.value)

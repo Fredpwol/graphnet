@@ -22,9 +22,14 @@ class Person(Node):
         self.age = age
         self.sex = sex
     
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
     def __repr__(self):
         return "Person(name=%s, age=%s, sex=%s)"%(self.name, self.age, self.sex)
-
 
 class Test(unittest.TestCase):
 
@@ -72,7 +77,7 @@ class Test(unittest.TestCase):
         self.assertEqual(sort , [4,5,2,0,3,1])
     
     def test_inherit_node(self):
-        self.g = Graph(ref="name")
+        self.g = Graph(ref="name", type=VECTOR)
         obj = []
         for pes in persons:
             obj.append(Person(**pes))
