@@ -373,7 +373,7 @@ class Graph(object):
         ----------
         source:int, str, float, optional
             Value of the node to start the tranverse. if ommited the method
-            uses a random node as source.
+            uses the first node in the graph as source.
         key:int, str, float, optional
             Value of the node to stop the tranverse. if ommited the method
             stops when all  node in the graph are tranversed.

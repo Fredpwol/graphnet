@@ -53,7 +53,7 @@ def DFS(graph, source=None, key=None):
     ----------
     source:int, str, float, optional
         Value of the node to start the tranverse. if ommited the method
-        uses a random node as source.
+        uses the first node in the graph as source.
     key:int, str, float, optional
         Value of the node to stop the tranverse. if ommited the method
         stops when all  node in the graph are tranversed.
@@ -62,38 +62,42 @@ def DFS(graph, source=None, key=None):
     value: list
         A list of the path traversed in order from source to key.
     """
-    if source:
-        source = graph[source]
-    else:
-        source = random.choice(graph.get_nodes)
-
-    def dfs_traverse(source, key=None, visited=None):
-        if key:
-            if source == key:
-                return [source]
-            for adj_node in source.adjacent_nodes:
-                res = dfs_traverse(adj_node, key)
-                if res:
-                    res.append(source)
-                    return res
-            return None
-        else:
-            for node in source.adjacent_nodes:
-                if node in visited:
-                    pass
-                dfs_traverse(node, visited=visited)
-            visited.append(source)
-
     if key != None:
-        assert source != None
-        for adj_node in source.adjacent_nodes:
-            res = dfs_traverse(adj_node, key)
-            if res:
-                res.append(source)
-                return res
-    else:
+        key = graph[key]
+
+    def dfs_traverse(node, visited, key=None):
+        if key != None and key == node:
+            return [node]
+        
+        visited[node]= True
+        if len(node.adjacent_nodes) == 0:
+            if key == None:
+                return [node]
+            else:
+                return []
+        res = [node]
+        for adj_node in node.adjacent_nodes: 
+            if visited[adj_node] == False: 
+                res += dfs_traverse(adj_node, visited, key)
+                if key != None:
+                    if key in res:
+                        break
+                    else:
+                        res = []
+        return res
+    
+    visited = {node: False for node in graph}
+    if source == None:
+        stack = []
         for node in graph:
-            visisted = []
-            dfs_traverse(node, visited=visisted)
-        return visisted
-    return None
+            if visited[node] == False: 
+                res = dfs_traverse(node, visited, key)
+                stack = stack + res
+        return stack
+    else:
+        source = graph[source]
+        res = dfs_traverse(source, visited, key)
+        return res
+
+
+            
