@@ -77,7 +77,18 @@ class Test(unittest.TestCase):
         for pes in persons:
             obj.append(Person(**pes))
         self.g.add_nodes_from_iterable(obj)
-        self.assertAlmostEqual(obj, self.g.get_nodes)
+        self.assertEqual(obj, self.g.get_nodes)
+
+    def test_DFS(self):
+        self.g = Graph()
+        self.g.add_nodes_from_iterable(range(4))
+        self.g.add_edge(0, 1) 
+        self.g.add_edge(0, 2) 
+        self.g.add_edge(1, 2) 
+        self.g.add_edge(2, 0) 
+        self.g.add_edge(2, 3) 
+        self.g.add_edge(3, 3) 
+        self.assertEqual(self.g.DFS(2), [self.g[2], self.g[0], self.g[1], self.g[3]])
         
 
 if __name__ == '__main__':

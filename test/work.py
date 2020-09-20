@@ -1,3 +1,7 @@
+"""
+Test and Visualize graph plots
+"""
+
 if __name__ == "__main__" and __package__ is None:
     from sys import path
     from os.path import dirname as dir
@@ -12,7 +16,7 @@ from test import persons, Person
 from pygnet.algorithms.path import dijkstra, minimum_spanning_tree
 from pygnet import Graph, Node, VECTOR
 
-_, ax = plt.subplots(2, 2, squeeze=False)
+_, ax = plt.subplots(1, squeeze=False)
 
 
 class VisualTest:
@@ -25,7 +29,7 @@ class VisualTest:
             for e in edges:
                 g.add_edge(*e)
             # print(g.graph_matrix)
-            print(g.DFS())
+            print(g.DFS(0))
             cost = dijkstra(g, 0, 5, path=True)
             # print(cost)
             for i, c in enumerate(cost):
