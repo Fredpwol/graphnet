@@ -1,5 +1,5 @@
 # Graphnet
-[![image](https://img.shields.io/pypi/pyversions/present.svg)](https://pypi.org/project/pygnet/)
+[![image](https://img.shields.io/pypi/pyversions/present.svg)](https://pypi.org/project/graphnet/)
 
 A lightweight python library for graph and networks manipulation and visualization
 
