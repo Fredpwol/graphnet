@@ -3,3 +3,6 @@ __pycache__
 test/idea_test.ipynb
 test/.ipynb_checkpoints
 *.egg-info
+build
+dist
+README_pypi.md
